@@ -1,0 +1,29 @@
+{
+    "name": "mervick/yii2-redactor-js",
+    "version": "1.0.0",
+    "description": "Yii2 widget for redactor-js (WYSIWYG-editor)",
+    "authors": [
+        {
+            "name": "Andrey Izman",
+            "email": "izmanw@gmail.com"
+        }
+    ],
+    "keywords": [
+        "yii",
+        "yii2",
+        "asset",
+        "bundle",
+        "WYSIWYG",
+        "editor"
+    ],
+    "license": "MIT",
+    "support": {
+        "source": "https://github.com/mervick/yii2-redactor-js"
+    },
+    "homepage": "https://github.com/mervick/yii2-redactor-js",
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "*",
+        "mervick/redactor-js-mit": "*"
+    }
+}
