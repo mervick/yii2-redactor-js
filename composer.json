@@ -1,7 +1,7 @@
 {
     "name": "mervick/yii2-redactor-js",
-    "version": "1.0.0",
     "description": "Yii2 widget for redactor-js (WYSIWYG-editor)",
+    "type": "yii2-extension",
     "authors": [
         {
             "name": "Andrey Izman",
