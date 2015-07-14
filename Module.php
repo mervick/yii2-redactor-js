@@ -11,6 +11,11 @@ use Yii;
 class Module extends \yii\base\Module
 {
     /**
+     * @var string Editor language
+     */
+    public $lang = 'en';
+
+    /**
      * @var string Path to upload images
      */
     public $imageUploadPath;
@@ -31,13 +36,17 @@ class Module extends \yii\base\Module
     public $fileBaseUrl;
 
     /**
-     * @var array Plugin js options
+     * Html options that will be assigned to the text area
+     */
+    public $htmlOptions;
+
+    /**
+     * @var array Plugin options that will be passed to the editor
      */
     public $options;
 
     /**
-     *
-     * @var array list of roles that this rule applies to. Two special roles are recognized, and
+     * @var array list of roles that will have allow to upload files. Two special roles are recognized, and
      * they are checked via [[User::isGuest]]:
      *
      * - `?`: matches a guest user (not authenticated yet)
@@ -46,7 +55,7 @@ class Module extends \yii\base\Module
      * If you are using RBAC (Role-Based Access Control), you may also specify role or permission names.
      * In this case, [[User::can()]] will be called to check access.
      *
-     * If this property is not set or empty, it means this rule applies to all roles.
+     * If this property is not set or empty, it will allow access to all roles.
      */
     public $allowedRoles;
 }
