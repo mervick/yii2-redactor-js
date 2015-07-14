@@ -25,5 +25,10 @@
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
         "mervick/redactor-js-mit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "mervick\\redactorjs": ""
+        }
     }
 }
