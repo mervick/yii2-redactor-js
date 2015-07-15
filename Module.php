@@ -36,6 +36,16 @@ class Module extends \yii\base\Module
     public $fileBaseUrl;
 
     /**
+     * Editor width
+     */
+    public $width = '100%';
+
+    /**
+     * Editor height
+     */
+    public $height = '400px';
+
+    /**
      * Html options that will be assigned to the text area
      */
     public $htmlOptions;
