@@ -68,4 +68,30 @@ class Module extends \yii\base\Module
      * If this property is not set or empty, it will allow access to all roles.
      */
     public $allowedRoles;
+
+
+    /**
+     * @inheritdoc
+     */
+    public function bootstrap($app)
+    {
+        if ($app instanceof \yii\web\Application) {
+            $app->getUrlManager()->addRules([
+                $this->id . '/<controller:[\w\-]+>/<action:[\w\-]+>' => $this->id . '/<controller>/<action>',
+            ], false);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $this->imageUploadPath = Yii::getAlias($this->imageUploadPath);
+        $this->fileUploadPath = Yii::getAlias($this->fileUploadPath);
+        $this->imageBaseUrl = Yii::getAlias($this->imageBaseUrl);
+        $this->fileBaseUrl = Yii::getAlias($this->fileBaseUrl);
+
+        parent::init();
+    }
 }
