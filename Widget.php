@@ -92,17 +92,6 @@ class Widget extends InputWidget
     }
 
     /**
-     * Run the widget
-     */
-    public function run()
-    {
-        parent::run();
-
-        echo Html::endTag('div');
-        echo Html::endTag('div');
-    }
-
-    /**
      * Generate HTML identifiers for elements
      */
     protected function generateId()
