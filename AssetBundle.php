@@ -11,13 +11,16 @@ class AssetBundle extends \yii\web\AssetBundle
     /**
      * @inheritdoc
      */
+    public $sourcePath = '@vendor/mervick/redactor-js-mit/redactor';
+
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
-        $this->setSourcePath('@vendor/mervick/redactor-js-mit/redactor');
-        $this->setupAssets('js', [
-            YII_DEBUG ? 'redactor.js' : 'redactor.min.js'
-        ]);
-        $this->setupAssets('css', ['redactor.css']);
+        $this->js = [ YII_DEBUG ? 'redactor.js' : 'redactor.min.js'];
+        $this->css = ['redactor.css'];
+
         parent::init();
     }
 }
