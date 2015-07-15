@@ -24,7 +24,8 @@
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
-        "mervick/redactor-js-mit": "*"
+        "mervick/redactor-js-mit": "*",
+        "mervick/yii2-image": "*"
     },
     "autoload": {
         "psr-4": {
