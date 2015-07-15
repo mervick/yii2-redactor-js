@@ -6,10 +6,12 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
+use yii\base\Controller;
 use yii\web\Response;
 use mervick\redactorjs\Module;
 use mervick\image\Image;
+use yii\web\UploadedFile;
+
 
 /**
  * Class DefaultController
@@ -68,6 +70,22 @@ class DefaultController extends Controller
     }
 
     /**
+     * Generates random filename
+     * @param $path
+     * @param string $extension
+     * @return string
+     */
+    protected function uniqueRandomFilename($path, $extension='')
+    {
+        do {
+            $filename = Yii::$app->security->generateRandomString(mt_rand(3, 20));
+        }
+        while (file_exists("{$path}/{$filename}{$extension}"));
+
+        return $filename;
+    }
+
+    /**
      * Upload the image
      */
     public function actionUploadImage()
@@ -84,22 +102,16 @@ class DefaultController extends Controller
                     $image->resize($width, $height, 'auto');
                 }
 
-                $uploadPath = rtrim($this->_module->imageUploadPath, '/');
-
                 $extension = strtolower(image_type_to_extension($image->type, true));
-                if (!in_array($extension, ['.jpeg', '.gif', '.png'])) {
-                    $extension = '.jpeg';
+                if (!in_array($extension, ['.jpg', '.gif', '.png'])) {
+                    $extension = '.jpg';
                 }
 
-                do {
-                    $filename = Yii::$app->security->generateRandomString(mt_rand(3, 20));
-                }
-                while (file_exists("{$uploadPath}/{$filename}{$extension}"));
+                $filename = $this->uniqueRandomFilename($this->_module->imageUploadPath, $extension);
 
-                if ($image->save("{$uploadPath}/{$filename}{$extension}")) {
+                if ($image->save("{$this->_module->imageUploadPath}/{$filename}{$extension}")) {
                     return [
-                        'filelink' => rtrim($this->_module->imageBaseUrl, '/') . "/{$filename}{$extension}",
-                        'filename' => "{$filename}{$extension}"
+                        'filelink' => "{$this->_module->imageBaseUrl}/{$filename}{$extension}"
                     ];
                 }
             }
@@ -113,7 +125,27 @@ class DefaultController extends Controller
      */
     public function actionUploadFile()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
 
+        if (isset($_FILES['file'])) {
+            $file = UploadedFile::getInstanceByName('file');
+
+            $extension = strtolower(pathinfo($file->name, PATHINFO_EXTENSION));
+            if (!empty($extension)) {
+                $extension = ".$extension";
+            }
+
+            $filename = $this->uniqueRandomFilename($this->_module->fileUploadPath, $extension);
+
+            if ($file->saveAs("{$this->_module->imageUploadPath}/{$filename}{$extension}")) {
+                return [
+                    'filelink' => "{$this->_module->fileBaseUrl}/{$filename}{$extension}",
+                    'filename' => $file['name'],
+                ];
+            }
+        }
+
+        return [];
     }
 
 }
