@@ -26,6 +26,16 @@ class Module extends \yii\base\Module
     public $imageBaseUrl;
 
     /**
+     * @var string the maximum image resolution
+     */
+    public $maxImageResolution = '600x400';
+
+    /**
+     * @var string Image driver
+     */
+    public $imageDriver;
+
+    /**
      * @var string Path to upload files
      */
     public $fileUploadPath;
