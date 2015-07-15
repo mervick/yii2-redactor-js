@@ -7,6 +7,7 @@ use yii\base\InvalidConfigException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
+use mervick\redactorjs\Module;
 
 /**
  * Class DefaultController
@@ -15,7 +16,7 @@ use yii\web\Controller;
 class DefaultController extends Controller
 {
     /**
-     * @var \mervick\redactorjs\Module
+     * @var Module
      */
     private $_module;
 
@@ -25,11 +26,11 @@ class DefaultController extends Controller
      */
     public function init()
     {
-        $module = Yii::$app->getModule('redactorjs');
-        if ($module === null) {
+        $this->_module = Yii::$app->getModule('redactorjs');
+        if ($this->_module === null) {
             throw new InvalidConfigException("The module 'redactorjs' was not found. Ensure you have setup the 'redactorjs' module in your Yii configuration file.");
         }
-        $this->_module = $module;
+
         parent::init();
     }
 
