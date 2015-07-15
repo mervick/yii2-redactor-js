@@ -7,6 +7,7 @@ use yii\helpers\Json;
 use yii\widgets\InputWidget;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Class Widget
@@ -76,6 +77,13 @@ class Widget extends InputWidget
         }
         if (!empty($this->height)) {
             $this->options['style'] = "height: {$this->height};" . (!empty($this->options['style']) ? $this->options['style'] : '');
+        }
+
+        if (!empty($this->_module->imageUploadPath)) {
+            $this->editorOptions['imageUpload'] = Url::toRoute(['/', $this->_module->id, 'default/upload-image']);
+        }
+        if (!empty($this->_module->fileUploadPath)) {
+            $this->editorOptions['fileUpload'] = Url::toRoute(['/', $this->_module->id, 'default/upload-file']);
         }
 
         $this->generateId();
