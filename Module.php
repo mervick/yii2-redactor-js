@@ -97,10 +97,10 @@ class Module extends \yii\base\Module
      */
     public function init()
     {
-        $this->imageUploadPath = Yii::getAlias($this->imageUploadPath);
-        $this->fileUploadPath = Yii::getAlias($this->fileUploadPath);
-        $this->imageBaseUrl = Yii::getAlias($this->imageBaseUrl);
-        $this->fileBaseUrl = Yii::getAlias($this->fileBaseUrl);
+        $this->imageUploadPath = rtrim(Yii::getAlias($this->imageUploadPath), '/');
+        $this->fileUploadPath = rtrim(Yii::getAlias($this->fileUploadPath), '/');
+        $this->imageBaseUrl = rtrim(Yii::getAlias($this->imageBaseUrl), '/');
+        $this->fileBaseUrl = rtrim(Yii::getAlias($this->fileBaseUrl), '/');
 
         parent::init();
     }
