@@ -46,14 +46,14 @@ class Module extends \yii\base\Module
     public $height = '400px';
 
     /**
-     * Html options that will be assigned to the text area
+     * @var array the HTML attributes for the textarea input
      */
-    public $htmlOptions;
+    public $options;
 
     /**
      * @var array Plugin options that will be passed to the editor
      */
-    public $options;
+    public $editorOptions;
 
     /**
      * @var array list of roles that will have allow to upload files. Two special roles are recognized, and
