@@ -140,7 +140,7 @@ class DefaultController extends Controller
             if ($file->saveAs("{$this->_module->imageUploadPath}/{$filename}{$extension}")) {
                 return [
                     'filelink' => "{$this->_module->fileBaseUrl}/{$filename}{$extension}",
-                    'filename' => $file['name'],
+                    'filename' => $file->name,
                 ];
             }
         }

@@ -1,24 +1,45 @@
 <?php
 
-namespace mervick\redactorjs\controllers;
+namespace mervick\redactorjs;
 
 use Yii;
+use yii\helpers\Json;
+use yii\widgets\InputWidget;
 use yii\base\InvalidConfigException;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
-use yii\base\Controller;
-use yii\web\Response;
-use mervick\redactorjs\Module;
-use mervick\image\Image;
-use yii\web\UploadedFile;
-
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
- * Class DefaultController
- * @package mervick\redactorjs\controllers
+ * Class Widget
+ * @package mervick\redactorjs
  */
-class DefaultController extends Controller
+class Widget extends InputWidget
 {
+    /**
+     * @var string Editor language
+     */
+    public $lang;
+
+    /**
+     * Editor width
+     */
+    public $width;
+
+    /**
+     * Editor height
+     */
+    public $height;
+
+    /**
+     * @var array the HTML attributes for the textarea input
+     */
+    public $options;
+
+    /**
+     * @var array Plugin options that will be passed to the editor
+     */
+    public $editorOptions;
+
     /**
      * @var Module
      */
@@ -26,126 +47,84 @@ class DefaultController extends Controller
 
 
     /**
-     * @inheritdoc
+     * Initialize the widget
      */
     public function init()
     {
+        parent::init();
+
         $this->_module = Yii::$app->getModule('redactorjs');
         if ($this->_module === null) {
             throw new InvalidConfigException("The module 'redactorjs' was not found. Ensure you have setup the 'redactorjs' module in your Yii configuration file.");
         }
 
-        parent::init();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        $behaviors = [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'upload-image' => ['post'],
-                    'upload-file' => ['post'],
-                ],
-            ],
-        ];
-
-        if (!empty($this->_module->allowedRoles)) {
-            $behaviors['access'] = [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['upload-image', 'upload-file'],
-                        'allow' => true,
-                        'roles' => $this->_module->allowedRoles,
-                    ],
-                ],
-            ];
-        }
-
-        return $behaviors;
-    }
-
-    /**
-     * Generates random filename
-     * @param $path
-     * @param string $extension
-     * @return string
-     */
-    protected function uniqueRandomFilename($path, $extension='')
-    {
-        do {
-            $filename = Yii::$app->security->generateRandomString(mt_rand(3, 20));
-        }
-        while (file_exists("{$path}/{$filename}{$extension}"));
-
-        return $filename;
-    }
-
-    /**
-     * Upload the image
-     */
-    public function actionUploadImage()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
-        if (!empty($_FILES['file']['tmp_name']))
-        {
-            if ($image = Image::load($_FILES['file']['tmp_name'], $this->_module->imageDriver)) {
-                if (!empty($this->_module->maxImageResolution)) {
-                    $resolution = explode('x', strtolower($this->_module->maxImageResolution));
-                    $width = empty($resolution[0]) ? null: $resolution[0];
-                    $height = empty($resolution[1]) ? null: $resolution[1];
-                    $image->resize($width, $height, 'auto');
-                }
-
-                $extension = strtolower(image_type_to_extension($image->type, true));
-                if (!in_array($extension, ['.jpg', '.gif', '.png'])) {
-                    $extension = '.jpg';
-                }
-
-                $filename = $this->uniqueRandomFilename($this->_module->imageUploadPath, $extension);
-
-                if ($image->save("{$this->_module->imageUploadPath}/{$filename}{$extension}")) {
-                    return [
-                        'filelink' => "{$this->_module->imageBaseUrl}/{$filename}{$extension}"
-                    ];
-                }
+        foreach (['lang', 'width', 'height', 'options', 'editorOptions'] as $property) {
+            if (empty($this->$property)) {
+                $this->$property = $this->_module->$property;
             }
         }
+        if (empty($this->options)) {
+            $this->options = [];
+        }
+        if (empty($this->editorOptions)) {
+            $this->editorOptions = [];
+        }
+        if (empty($this->editorOptions['lang'])) {
+            $this->editorOptions['lang'] = $this->lang;
+        }
+        if (!empty($this->width)) {
+            $this->options['style'] = "width: {$this->width};" . (!empty($this->options['style']) ? $this->options['style'] : '');
+        }
+        if (!empty($this->height)) {
+            $this->options['style'] = "height: {$this->height};" . (!empty($this->options['style']) ? $this->options['style'] : '');
+        }
 
-        return [];
+        if (!empty($this->_module->imageUploadPath)) {
+            $this->editorOptions['imageUpload'] = Url::toRoute(['/', $this->_module->id, 'default/upload-image']);
+        }
+        if (!empty($this->_module->fileUploadPath)) {
+            $this->editorOptions['fileUpload'] = Url::toRoute(['/', $this->_module->id, 'default/upload-file']);
+        }
+
+        $this->generateId();
+        $this->registerAssets();
+        echo $this->renderInput();
     }
 
     /**
-     * Upload the file
+     * Generate HTML identifiers for elements
      */
-    public function actionUploadFile()
+    protected function generateId()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
-        if (isset($_FILES['file'])) {
-            $file = UploadedFile::getInstanceByName('file');
-
-            $extension = strtolower(pathinfo($file->name, PATHINFO_EXTENSION));
-            if (!empty($extension)) {
-                $extension = ".$extension";
-            }
-
-            $filename = $this->uniqueRandomFilename($this->_module->fileUploadPath, $extension);
-
-            if ($file->saveAs("{$this->_module->imageUploadPath}/{$filename}{$extension}")) {
-                return [
-                    'filelink' => "{$this->_module->fileBaseUrl}/{$filename}{$extension}",
-                    'filename' => $file->name,
-                ];
-            }
+        if (empty($this->options['id'])) {
+            $this->options['id'] = $this->getId();
         }
-
-        return [];
     }
 
+    /**
+     * Register client assets
+     */
+    protected function registerAssets()
+    {
+        $view = $this->getView();
+        AssetBundle::register($view);
+
+        $params = !empty($this->editorOptions) ? Json::encode($this->editorOptions) : '';
+
+        // initialize redactor editor
+        $view->registerJs('jQuery("document").ready(function(){jQuery("#' . $this->options['id'] . '").redactor(' . $params . ');});');
+    }
+
+    /**
+     * Render the text area input
+     */
+    protected function renderInput()
+    {
+        if ($this->hasModel()) {
+            $input = Html::activeTextArea($this->model, $this->attribute, $this->options);
+        } else {
+            $input = Html::textArea($this->name, $this->value, $this->options);
+        }
+        return $input;
+    }
 }
