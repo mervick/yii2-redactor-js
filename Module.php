@@ -3,17 +3,18 @@
 namespace mervick\redactorjs;
 
 use Yii;
+use yii\base\BootstrapInterface;
 
 /**
  * Class Module
  * @package mervick\redactorjs
  */
-class Module extends \yii\base\Module
+class Module extends \yii\base\Module implements BootstrapInterface
 {
     /**
      * @var string Editor language
      */
-    public $lang = 'en';
+    public $lang = 'en-US';
 
     /**
      * @var string Path to upload images
