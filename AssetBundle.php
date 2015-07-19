@@ -47,7 +47,7 @@ class AssetBundle extends \yii\web\AssetBundle
         ];
 
         if (isset($languages[$lang])) {
-            self::$language = $languages[$lang];
+            self::$language = "lang/{$languages[$lang]}";
         }
     }
 }
