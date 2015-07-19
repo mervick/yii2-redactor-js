@@ -80,10 +80,10 @@ class Widget extends InputWidget
         }
 
         if (!empty($this->_module->imageUploadPath)) {
-            $this->editorOptions['imageUpload'] = Url::toRoute(['/', $this->_module->id, 'default/upload-image']);
+            $this->editorOptions['imageUpload'] = Url::to(["/{$this->_module->id}/default/upload-image"]);
         }
         if (!empty($this->_module->fileUploadPath)) {
-            $this->editorOptions['fileUpload'] = Url::toRoute(['/', $this->_module->id, 'default/upload-file']);
+            $this->editorOptions['fileUpload'] = Url::to(["/{$this->_module->id}/default/upload-file"]);
         }
 
         $this->generateId();
