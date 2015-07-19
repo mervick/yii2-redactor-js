@@ -42,7 +42,7 @@ class AssetBundle extends \yii\web\AssetBundle
     public static function useLanguage($lang)
     {
         $languages = [
-            'ru-Ru' => 'ru-RU',
+            'ru-RU' => 'ru-RU',
             'ru' => 'ru-RU',
         ];
 
