@@ -106,6 +106,12 @@ class Widget extends InputWidget
      */
     protected function registerAssets()
     {
+        AssetBundle::useLanguage(Yii::$app->language);
+
+        if (!empty($this->editorOptions['lang'])) {
+            AssetBundle::useLanguage($this->editorOptions['lang']);
+        }
+
         $view = $this->getView();
         AssetBundle::register($view);
 
