@@ -99,7 +99,9 @@ class DefaultController extends Controller
                     $resolution = explode('x', strtolower($this->_module->maxImageResolution));
                     $width = empty($resolution[0]) ? null: $resolution[0];
                     $height = empty($resolution[1]) ? null: $resolution[1];
-                    $image->resize($width, $height, 'auto');
+                    if ($image->width > $width && $image->height > $height) {
+                        $image->resize($width, $height, 'auto');
+                    }
                 }
 
                 $extension = strtolower(image_type_to_extension($image->type, true));
